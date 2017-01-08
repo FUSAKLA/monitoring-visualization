@@ -1,0 +1,57 @@
+create  (:Component:Server {name:"adminserver"}),
+		(:Component:Server {name:"apiserver-cipisek"}),
+		(:Component:Server {name:"apiserver-drak"}),
+		(:Component:Server {name:"sortserver"}),
+		(:Component:Server {name:"fe-api"}),
+		(:Component:Server {name:"idserver"}),
+		(:Component:Server {name:"userweb"}),
+		(:Component:Server {name:"adminweb"}),
+		(:Component:Database {name:"hbase"}),
+		(:Component:Database {name:"mysql-node"}),
+		(:Component:Database {name:"mysql-relation"}),
+		(:Component:Database {name:"mysql-id"})
+
+
+
+create index on :Component(name)
+create index on :Server(name)
+create index on :Database(name)
+create index on :CALL(call_count)
+
+
+
+match
+		(adminserver:Component {name:"adminserver"}),
+		(cipisek:Component {name:"apiserver-cipisek"}),
+		(drak:Component {name:"apiserver-drak"}),
+		(sortserver:Component {name:"sortserver"}),
+		(fe_api:Component {name:"fe-api"}),
+		(idserver:Component {name:"idserver"}),
+		(userweb:Component {name:"userweb"}),
+		(adminweb:Component {name:"adminweb"}),
+		(hbase_db:Component {name:"hbase"}),
+		(node_db:Component {name:"mysql-node"}),
+		(relation_db:Component {name:"mysql-relation"}),
+		(id_db:Component {name:"mysql-id"})
+create
+		(cipisek)-[:CALLS {call_count:524}]->(adminserver),
+		(drak)-[:CALLS {call_count:333}]->(adminserver),
+		(drak)-[:CALLS {call_count:84}]->(sortserver),
+		(sortserver)-[:CALLS {call_count:50}]->(node_db),
+		(sortserver)-[:CALLS {call_count:50}]->(relation_db),
+		(sortserver)-[:CALLS {call_count:35}]->(hbase_db),
+		(sortserver)-[:CALLS {call_count:35}]->(idserver),
+		(fe_api)-[:CALLS {call_count:84}]->(adminserver),
+		(fe_api)-[:CALLS {call_count:54}]->(sortserver),
+		(userweb)-[:CALLS {call_count:8546}]->(adminserver),
+		(adminweb)-[:CALLS {call_count:540}]->(adminserver),
+		(adminserver)-[:CALLS {call_count:540}]->(node_db),
+		(adminserver)-[:CALLS {call_count:540}]->(idserver),
+		(adminserver)-[:CALLS {call_count:540}]->(relation_db),
+		(idserver)-[:CALLS {call_count:540}]->(id_db)
+
+
+
+
+MATCH (n)-[a]-(m) delete (a)
+MATCH (n) delete (n)
